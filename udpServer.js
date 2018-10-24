@@ -24,9 +24,10 @@ process.stdin.on('keypress', function (ch, key) {
     });
     
       var today = new Date()
-      var file = today.getDay() + "." + today.getMonth() + "." + today.getFullYear() + "_" + today.getHours() +
+      var month = today.getMonth() + 1
+      var file = today.getDate() + "." + month + "." + today.getFullYear() + "_" + today.getHours() +
                 "." + today.getMinutes() + ".csv"
-      var txtFile = today.getDay() + "." + today.getMonth() + "." + today.getFullYear() + "_" + today.getHours() +
+      var txtFile = today.getDate() + "." + month + "." + today.getFullYear() + "_" + today.getHours() +
       "." + today.getMinutes() + ".txt"
       file = file.toString()
       txtFile = txtFile.toString()
