@@ -1,9 +1,10 @@
 const fs = require('fs');
 const dgram = require('dgram');
+var keypress = require('keypress');
 var path = require('path');
 
-var keypress = require('keypress');
- 
+var delayButtonPress = 0;
+
 keypress(process.stdin);
 
 var running = false
@@ -25,10 +26,10 @@ process.stdin.on('keypress', function (ch, key) {
     
       var today = new Date()
       var month = today.getMonth() + 1
-      var file = today.getDate() + "." + month + "." + today.getFullYear() + "_" + today.getHours() +
-                "." + today.getMinutes() + ".csv"
-      var txtFile = today.getDate() + "." + month + "." + today.getFullYear() + "_" + today.getHours() +
-      "." + today.getMinutes() + ".txt"
+      var file = "./csv/" + today.getDate() + "." + month + "." + today.getFullYear() + "_" + today.getHours() +
+                "." + today.getMinutes() + "." + today.getSeconds() + ".csv"
+      var txtFile = "./txt/" + today.getDate() + "." + month + "." + today.getFullYear() + "_" + today.getHours() +
+      "." + today.getMinutes() + "." + today.getSeconds() + ".txt"
       file = file.toString()
       txtFile = txtFile.toString()
     
@@ -40,9 +41,11 @@ process.stdin.on('keypress', function (ch, key) {
         msg = msg.toString()
         let d = msg.indexOf("d")
         let inverseD = d - msg.length
-        let range = msg.slice(0,d)
+        let status = msg.slice(0,d)
         let distance = msg.slice(inverseD + 1)
-        msg = interval.toString() + "," + range + "," + distance + "," + simpleId
+        msg = interval.toString() + "," + status + "," + distance + "," + simpleId + "," + delayButtonPress;
+
+        if(delayButtonPress === 1 ) delayButtonPress = 0
     
         //console.log("newdata",msg)
      fs.appendFile(file, '\n' + msg, (err) => {  
@@ -57,7 +60,7 @@ process.stdin.on('keypress', function (ch, key) {
     server.on('listening', () => {
       const address = server.address();
       intervalTime = today.getTime()
-      let header = "time,range,distance,ip"
+      let header = "time,status,distance,id,timeDelay"
       console.log(intervalTime)
 
       fs.stat(file, function(err, stat) {
@@ -78,7 +81,16 @@ process.stdin.on('keypress', function (ch, key) {
     });
   
     server.bind(8080);
-  }  else if(key.name === "c") {server.close();process.stdin.pause();}
+  }  else if(key.name === "c") {
+        try {
+          server.close();
+          process.stdin.pause();
+      } catch(err) {
+          process.stdin.pause();
+      }
+
+  }
+    else if (key.name === "x") {delayButtonPress = 1;}
 
 });
  
