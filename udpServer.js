@@ -3,8 +3,6 @@ const dgram = require('dgram');
 var keypress = require('keypress');
 var path = require('path');
 
-var delayButtonPress = 0;
-
 keypress(process.stdin);
 
 var running = false
@@ -43,9 +41,9 @@ process.stdin.on('keypress', function (ch, key) {
         let inverseD = d - msg.length
         let status = msg.slice(0,d)
         let distance = msg.slice(inverseD + 1)
-        msg = interval.toString() + "," + status + "," + distance + "," + simpleId + "," + delayButtonPress;
+        msg = interval.toString() + "," + status + "," + distance + "," + simpleId;
 
-        if(delayButtonPress === 1 ) delayButtonPress = 0
+        
     
         //console.log("newdata",msg)
      fs.appendFile(file, '\n' + msg, (err) => {  
@@ -60,7 +58,7 @@ process.stdin.on('keypress', function (ch, key) {
     server.on('listening', () => {
       const address = server.address();
       intervalTime = today.getTime()
-      let header = "time,status,distance,id,timeDelay"
+      let header = "time,status,distance,id"
       console.log(intervalTime)
 
       fs.stat(file, function(err, stat) {
@@ -90,7 +88,6 @@ process.stdin.on('keypress', function (ch, key) {
       }
 
   }
-    else if (key.name === "x") {delayButtonPress = 1;}
 
 });
  
